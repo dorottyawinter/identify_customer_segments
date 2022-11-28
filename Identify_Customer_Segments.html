@@ -19649,7 +19649,7 @@ handle 6 multi-level categorical features
 
 <span class="n">customer_cols</span> <span class="o">=</span> <span class="n">customers</span><span class="o">.</span><span class="n">columns</span>
 
-<span class="n">customers</span> <span class="o">=</span> <span class="n">imputer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">customers</span><span class="p">)</span>
+<span class="n">customers</span> <span class="o">=</span> <span class="n">imputer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">customers</span><span class="p">)</span>
 
 <span class="n">customers</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">customers</span><span class="p">)</span>
 <span class="n">customers</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">customer_cols</span>
@@ -19672,12 +19672,12 @@ handle 6 multi-level categorical features
 
 <span class="n">cols_to_add</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">data_cols</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">customer_cols</span><span class="p">)))</span>
 
-<span class="n">customers</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+<span class="n">customers_ext</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
     <span class="p">[</span><span class="n">customers</span><span class="p">,</span>
      <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">cols_to_add</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">customers</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)],</span>
     <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
     <span class="p">)</span>
-<span class="n">customers</span> <span class="o">=</span> <span class="n">customers</span><span class="p">[</span><span class="n">data_cols</span><span class="p">]</span>
+<span class="n">customers_ext</span> <span class="o">=</span> <span class="n">customers_ext</span><span class="p">[</span><span class="n">data_cols</span><span class="p">]</span>
 </pre></div>
 
      </div>
@@ -19695,7 +19695,7 @@ handle 6 multi-level categorical features
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># scaling</span>
 
-<span class="n">customers_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">customers</span><span class="p">)</span>
+<span class="n">customers_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">customers_ext</span><span class="p">)</span>
 
 <span class="n">customers_scaled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">customers_scaled</span><span class="p">)</span>
 <span class="n">customers_scaled</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">data_cols</span>
@@ -19764,7 +19764,7 @@ handle 6 multi-level categorical features
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -19773,12 +19773,105 @@ handle 6 multi-level categorical features
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cluster_prop_demographics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">cluster_predictions</span><span class="p">)</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster_predictions</span><span class="p">)</span>
-<span class="n">cluster_prop_customer</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">cluster_predictions_customers</span><span class="p">)</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster_predictions_customers</span><span class="p">)</span>
+<span class="n">cluster_prop_demographics</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>23    0.087836
+11    0.086059
+5     0.082153
+3     0.068603
+13    0.066317
+9     0.063661
+21    0.051024
+8     0.048323
+24    0.047206
+12    0.044530
+1     0.044245
+4     0.043159
+14    0.036363
+2     0.035051
+6     0.033470
+10    0.032098
+7     0.031134
+16    0.029101
+19    0.028180
+18    0.013282
+17    0.008018
+15    0.006103
+22    0.005199
+0     0.005069
+20    0.003814
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cluster_prop_customer</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">cluster_predictions_customers</span><span class="p">)</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster_predictions_customers</span><span class="p">)</span>
+<span class="n">cluster_prop_customer</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>17    1.0
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
@@ -19834,7 +19927,7 @@ class="
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -19843,11 +19936,166 @@ class="
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># What kinds of people are part of a cluster that is overrepresented in the customer data compared to the general population?</span>
+
+<span class="n">cluster_n</span> <span class="o">=</span> <span class="mi">17</span>
+
+<span class="n">cluster_overrepr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">scaler</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">pca_calibrated</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">kmeans_calibrated</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[</span><span class="n">cluster_n</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,),</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">data_cols</span>
+    <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cluster overrepresented - cluster</span><span class="si">{</span><span class="n">cluster_n</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cluster_overrepr</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>cluster overrepresented - cluster17:
+ALTERSKATEGORIE_GROB     3.576057
+ANREDE_KZ                1.710246
+FINANZ_MINIMALIST        2.633957
+FINANZ_SPARER            1.395766
+FINANZ_VORSORGER         4.525863
+FINANZ_ANLEGER           1.449339
+FINANZ_UNAUFFAELLIGER    1.636354
+FINANZ_HAUSBAUER         4.621789
+GREEN_AVANTGARDE         0.087026
+HEALTH_TYP               1.875317
+dtype: float64
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># What kinds of people are part of a cluster that is underrepresented in the customer data compared to the general population?</span>
+
+<span class="n">cluster_n</span> <span class="o">=</span> <span class="mi">23</span>
+
+<span class="n">cluster_underrepr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">scaler</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">pca_calibrated</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">kmeans_calibrated</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[</span><span class="n">cluster_n</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,),</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">data_cols</span>
+    <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cluster underrepresented - cluster</span><span class="si">{</span><span class="n">cluster_n</span><span class="si">}</span><span class="s2">::&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cluster_underrepr</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>cluster underrepresented - cluster23::
+ALTERSKATEGORIE_GROB     3.424005
+ANREDE_KZ                1.480471
+FINANZ_MINIMALIST        4.305371
+FINANZ_SPARER            1.607886
+FINANZ_VORSORGER         4.291743
+FINANZ_ANLEGER           2.392890
+FINANZ_UNAUFFAELLIGER    1.800130
+FINANZ_HAUSBAUER         2.498514
+GREEN_AVANTGARDE        -0.000547
+HEALTH_TYP               2.169515
+dtype: float64
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">((</span><span class="n">cluster_underrepr</span><span class="p">[</span><span class="n">customer_cols</span><span class="p">]</span> <span class="o">-</span> <span class="n">customers</span><span class="p">[</span><span class="n">customer_cols</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">customers</span><span class="p">[</span><span class="n">customer_cols</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()))</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>LP_STATUS_GROB_4.0      1.498937
+LP_STATUS_FEIN_9.0      1.329129
+LP_STATUS_FEIN_8.0      1.055594
+FINANZTYP_6             0.775311
+HH_EINKOMMEN_SCORE      0.716168
+LP_STATUS_FEIN_4.0      0.702723
+GFK_URLAUBERTYP_12.0    0.586855
+SEMIO_ERL               0.528650
+CJT_GESAMTTYP_2.0       0.365388
+ALTERSKATEGORIE_GROB    0.347700
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
@@ -19858,12 +20106,140 @@ class="
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># What kinds of people are part of a cluster that is underrepresented in the customer data compared to the general population?</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cluster_features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">cluster_overrepr</span><span class="p">,</span> <span class="n">cluster_underrepr</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">cluster_features</span><span class="p">[</span><span class="s1">&#39;diff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cluster_features</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">cluster_features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">cluster_features</span> <span class="o">=</span> <span class="n">cluster_features</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;diff&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cluster_features</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>diff</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>ANZ_HAUSHALTE_AKTIV</th>
+      <td>72.419954</td>
+      <td>2.318812</td>
+      <td>70.101142</td>
+    </tr>
+    <tr>
+      <th>KBA13_ANZAHL_PKW</th>
+      <td>604.565022</td>
+      <td>644.438618</td>
+      <td>39.873597</td>
+    </tr>
+    <tr>
+      <th>PRAEGENDE_JUGENDJAHRE_DECADE</th>
+      <td>58.845031</td>
+      <td>63.684762</td>
+      <td>4.839731</td>
+    </tr>
+    <tr>
+      <th>ORTSGR_KLS9</th>
+      <td>6.507215</td>
+      <td>3.161666</td>
+      <td>3.345549</td>
+    </tr>
+    <tr>
+      <th>LP_LEBENSPHASE_FEIN</th>
+      <td>9.810511</td>
+      <td>12.782818</td>
+      <td>2.972307</td>
+    </tr>
+    <tr>
+      <th>MOBI_REGIO</th>
+      <td>1.033655</td>
+      <td>4.004999</td>
+      <td>2.971345</td>
+    </tr>
+    <tr>
+      <th>KBA05_GBZ</th>
+      <td>1.457628</td>
+      <td>4.092237</td>
+      <td>2.634609</td>
+    </tr>
+    <tr>
+      <th>WOHNLAGE</th>
+      <td>2.873702</td>
+      <td>5.434521</td>
+      <td>2.560818</td>
+    </tr>
+    <tr>
+      <th>CAMEO_INTL_2015_WEALTH</th>
+      <td>5.088264</td>
+      <td>2.688612</td>
+      <td>2.399652</td>
+    </tr>
+    <tr>
+      <th>EWDICHTE</th>
+      <td>4.713821</td>
+      <td>2.331812</td>
+      <td>2.382010</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -19873,7 +20249,19 @@ class="
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Discussion-3.3:-Compare-Customer-Data-to-Demographics-Data">Discussion 3.3: Compare Customer Data to Demographics Data<a class="anchor-link" href="#Discussion-3.3:-Compare-Customer-Data-to-Demographics-Data">&#182;</a></h3><p>(Double-click this cell and replace this text with your own text, reporting findings and conclusions from the clustering analysis. Can we describe segments of the population that are relatively popular with the mail-order company, or relatively unpopular with the company?)</p>
+<h3 id="Discussion-3.3:-Compare-Customer-Data-to-Demographics-Data">Discussion 3.3: Compare Customer Data to Demographics Data<a class="anchor-link" href="#Discussion-3.3:-Compare-Customer-Data-to-Demographics-Data">&#182;</a></h3><p>I think I got wrong results and I try to fix it soon.</p>
+<p>Based on the countplots there is a significant difference between the proportion of people in the demographics data and people in the customer data.
+Here I only see one over-represented cluster in the customer population - cluster 17 -, which covers 100% of the customer data, but covers only 0.8% of the demographics data.
+People belonging to this cluster are highly over-represented in the company's customer base.</p>
+<p>One under-represented cluster is cluster 23. People belonging to this cluster are under-represented in the company's customer base.</p>
+<p>There are some huge differences between cluster 17 (over-represented) and cluster 23 (under-represented).</p>
+<ul>
+<li>Number of households in the building is much higher in the over-represented cluster. - <em>ANZ_HAUSHALTE_AKTIV</em></li>
+<li>Size of the community is 10 times higher within the over-represented cluster. - <em>ORTSGR_KLS9</em></li>
+<li>While the over-represented cluster includes mostly wealthy single homeowners the under-represented cluster consist of single top earners of higher age. - <em>LP_LEBENSPHASE_FEIN</em></li>
+<li>People belonging to the under-represented cluster live in a very poor neighbourhood. - <em>WOHNLAGE</em></li>
+</ul>
+<p>I would recommend the company to focus more on people who belong to an over-represented group - cluster 17 - and ignore heavily under-represented groups - e.g cluster 23 -.</p>
 
 </div>
 </div>
